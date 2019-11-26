@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.julibo.demo.sb2x.dao.StudentDao" >
+    <resultMap id="studentMap" type="com.julibo.demo.sb2x.model.StudentModel">
+        <result column="id" property="id"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="sex" property="sex"/>
+        <result column="birthday" property="birthday"/>
+        <result column="village" property="village"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <sql id="BASE_TABLE">
+        tfwx_student
+    </sql>
+
+    <sql id="BASE_COLUMN">
+        id, code, name, sex, birthday, village, remark, created_at, updated_at, deleted_at
+    </sql>
+
+    <select id="selectAll"  resultMap="studentMap">
+        SELECT
+        <include refid="BASE_COLUMN"/>
+        FROM
+        <include refid="BASE_TABLE"/>
+        WHERE deleted_at IS NULL
+    </select>
+
+    <insert id="insert" parameterType="com.julibo.demo.sb2x.model.StudentModel">
+        INSERT INTO
+        <include refid="BASE_TABLE"></include>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            code, name, sex, birthday, village
+            <if test="remark != null">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="VALUES(" suffix=")" suffixOverrides=",">
+            #{code, jdbcType=VARCHAR},#{name, jdbcType=VARCHAR},#{sex, jdbcType=TINYINT},#{birthday, jdbcType=DATE},#{village, jdbcType=VARCHAR},
+            <if test="remark != null">
+                #{remark, jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>
